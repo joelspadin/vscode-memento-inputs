@@ -54,7 +54,7 @@ this will default to whatever text you last entered.
         {
             "label": "Deploy",
             "type": "shell",
-            "command": "node",
+            "command": "npm",
             "args": ["run", "deploy", "--address", "${input:address}"]
         }
     ],
