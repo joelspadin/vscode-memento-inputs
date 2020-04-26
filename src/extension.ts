@@ -15,14 +15,12 @@ interface PromptStringArgs extends CommonArgs {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-
 	const disposable = vscode.Disposable.from(
 		vscode.commands.registerCommand('memento.pickString', pickString),
 		vscode.commands.registerCommand('memento.promptString', promptString),
 	);
 
 	context.subscriptions.push(disposable);
-
 
 	function getDefault(args: CommonArgs) {
 		return context.workspaceState.get<string>(args.id, args.default);
@@ -61,7 +59,9 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 }
 
-export function deactivate() {}
+export function deactivate() {
+	// Nothing to do.
+}
 
 interface QuickPickOptions {
 	title: string;
@@ -70,7 +70,7 @@ interface QuickPickOptions {
 }
 
 function showQuickPickDefault(options: QuickPickOptions) {
-	return new Promise<string>(resolve => {
+	return new Promise<string>((resolve) => {
 		const picker = vscode.window.createQuickPick();
 		const disposable = vscode.Disposable.from(
 			picker,
@@ -88,10 +88,13 @@ function showQuickPickDefault(options: QuickPickOptions) {
 		picker.title = options.title;
 
 		// TODO: support localization for "Default".
-		picker.items = options.items.map(item => ({
-			label: item,
-			description: (item === options.value) ? 'Default' : undefined,
-		} as vscode.QuickPickItem));
+		picker.items = options.items.map(
+			(item) =>
+				({
+					label: item,
+					description: item === options.value ? 'Default' : undefined,
+				} as vscode.QuickPickItem),
+		);
 
 		for (const item of picker.items) {
 			if (item.label === options.value) {
