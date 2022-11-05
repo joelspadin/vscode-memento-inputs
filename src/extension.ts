@@ -18,6 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable = vscode.Disposable.from(
 		vscode.commands.registerCommand('memento.pickString', pickString),
 		vscode.commands.registerCommand('memento.promptString', promptString),
+		vscode.commands.registerCommand('memento.rememberString', rememberString)
 	);
 
 	context.subscriptions.push(disposable);
@@ -57,6 +58,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		return result;
 	}
+
+	async function rememberString(args: CommonArgs) {
+		return getDefault(args);
+	}
 }
 
 export function deactivate() {
@@ -80,7 +85,7 @@ function showQuickPickDefault(options: QuickPickOptions) {
 			}),
 
 			picker.onDidHide(() => {
-				resolve(undefined);
+				resolve("");
 				disposable.dispose();
 			}),
 		);

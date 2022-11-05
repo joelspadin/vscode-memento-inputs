@@ -2,7 +2,7 @@
 
 This extension lets you create [task input variables](https://code.visualstudio.com/docs/editor/variables-reference#_input-variables)
 which act like `pickString` and `promptString` but remember the value you
-previously entered and default to it the next time they are used.
+previously entered and default to it the next time they are used. In addition the remembered string can be used as input without prompt or picking using `rememberString`.
 
 The extension name comes from the [API used to store the last-used values](https://code.visualstudio.com/api/references/vscode-api#Memento).
 
@@ -29,6 +29,14 @@ In your `tasks.json`, create an input variable with type `command` and set the
   * **options**: An array of options for the user to pick from.
   * **default**: Default value that will be used if no last-used value has been set.
 
+`rememberString`:
+
+* **command**: `memento.rememberString`
+* **args**:
+  * **id**: Name to use for storing the last-used value.
+  * **default**: Default value that will be used if no last-used value has been set.
+
+
 Below is an example of a `tasks.json` that defines tasks to build an application
 and deploy it to some other device.
 
@@ -36,9 +44,11 @@ When starting a build, it will prompt for the build mode. Where the regular
 `pickString` would always default to `production`, this will default to
 whichever mode you last picked.
 
-When deploying the application, it will prompt for the IP address of the target
-device. Where the regular `promptString` would always default to `192.168.1.42`,
-this will default to whatever text you last entered.
+The `Deploy` task depends on `MySSHTask`. Both requires the IP address of the target
+device. To supress the input prompt to be shown twice the `MySSHTask` uses `memento.promptString`
+and `Deploy` uses `memento.rememberString` which takes the string entered by user in `MySSHTask`.
+Where the regular `promptString` would always default to `192.168.1.42`,
+the `memento.promptString` will default to whatever text you last entered.
 
 ```JSON
 {
@@ -55,8 +65,18 @@ this will default to whatever text you last entered.
             "label": "Deploy",
             "type": "shell",
             "command": "npm",
-            "args": ["run", "deploy", "--address", "${input:address}"]
-        }
+            "args": ["run", "deploy", "--address", "${input:storedAddress}"],
+			"depependsOn" : ["MySSHTask"]
+        },
+		{
+			"label": "MySSHTask",
+			"type": "shell",
+			"command": "ssh",
+			"args": [
+				"root@${input:address}",
+				"<ie. some shell commands before Deploy is executed...>"
+			]
+		}
     ],
     "inputs": [
         {
@@ -80,7 +100,17 @@ this will default to whatever text you last entered.
                 "default": "192.168.1.42",
                 "placeholder": "IP address"
             }
+        },
+		{
+            "id": "storedAddress",
+            "type": "command",
+            "command": "memento.rememberString",
+            "args": {
+                "id": "address",
+                "default": "192.168.1.42"
+            }
         }
+
     ]
 }
 ```
