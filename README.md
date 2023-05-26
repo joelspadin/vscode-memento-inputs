@@ -28,6 +28,8 @@ In your `tasks.json`, create an input variable with type `command` and set the
   * **description**: Shown in the quick input to provide context for the input.
   * **options**: An array of options for the user to pick from.
   * **default**: Default value that will be used if no last-used value has been set.
+  * **fixCase**: Fix the user input to `upper` or `lower` case.
+
 
 Below is an example of a `tasks.json` that defines tasks to build an application
 and deploy it to some other device.
