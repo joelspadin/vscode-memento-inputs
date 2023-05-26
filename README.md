@@ -19,6 +19,8 @@ In your `tasks.json`, create an input variable with type `command` and set the
   * **description**: Shown in the quick input to provide context for the input.
   * **default**: Default value that will be used if no last-used value has been set.
   * **placeholder**: Optional text to display if the input box is empty.
+  * **fixCase**: Fix the user input to `upper` or `lower` case.
+
 
 `pickString`:
 
