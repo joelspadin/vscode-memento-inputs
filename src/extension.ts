@@ -12,6 +12,7 @@ interface PickStringArgs extends CommonArgs {
 
 interface PromptStringArgs extends CommonArgs {
 	placeholder?: string;
+	fixCase?: 'upper' | 'lower'
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -41,7 +42,14 @@ export function activate(context: vscode.ExtensionContext) {
 			await setDefault(args, result);
 		}
 
-		return result;
+		switch (args.fixCase) {
+			case 'upper':
+				return result.toUpperCase()
+			case 'lower':
+				return result.toLowerCase()
+			default:
+				return result
+		}
 	}
 
 	async function promptString(args: PromptStringArgs) {
